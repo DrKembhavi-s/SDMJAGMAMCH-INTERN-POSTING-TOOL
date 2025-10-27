@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jain AGM Ayurvedic Medical College - Intern Postings Tool</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+min-height: 100vh;
+padding: 20px;
+}
+.container {
+max-width: 1400px;
+margin: 0 auto;
+background: white;
+border-radius: 15px;
+box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+.header {
+background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+color: white;
+text-align: center;
+padding: 30px 20px;
+border-radius: 15px 15px 0 0;
+}
+.header h1 { font-size: 2rem; margin-bottom: 10px; }
+.main-content { padding: 30px; }
+.view-toggle {
+display: flex;
+gap: 10px;
+margin-bottom: 20px;
+}
+.view-toggle button {
+padding: 10px 20px;
+border: 2px solid #3498db;
+background: white;
+color: #3498db;
+border-radius: 8px;
+cursor: pointer;
+font-weight: 600;
+}
+.view-toggle button.active {
+background: #3498db;
+color: white;
+}
+.login-section {
+background: #e8f8ff;
+border: 2px solid #3498db;
+border-radius: 10px;
+padding: 20px;
+margin-bottom: 25px;
+}
+.login-form {
+display: grid;
+grid-template-columns: 1fr 1fr auto;
+gap: 15px;
+align-items: end;
+}
+.form-group { display: flex; flex-direction: column; }
+label { font-weight: 600; color: #2c3e50; margin-bottom: 5px; }
+input, select, textarea {
+padding: 12px;
+border: 2px solid #e1e8ed;
+border-radius: 8px;
+font-size: 1rem;
+}
+input:focus, select:focus, textarea:focus { outline: none; border-color: #3498db; }
+.btn {
+padding: 12px 25px;
+border: none;
+border-radius: 8px;
+cursor: pointer;
+font-weight: 600;
+font-size: 0.9rem;
+transition: all 0.3s;
+}
+.btn-primary { background: #3498db; color: white; }
+.btn-success { background: #27ae60; color: white; }
+.btn-danger { background: #e74c3c; color: white; }
+.btn-secondary { background: #95a5a6; color: white; }
+.btn-warning { background: #f39c12; color: white; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+.section {
+background: #f8f9fa;
+border-radius: 10px;
+padding: 25px;
+margin-bottom: 25px;
+border-left: 5px solid #3498db;
+}
+.section h2 { color: #2c3e50; margin-bottom: 20px; font-size: 1.5rem; }
+.section h2::before { content: "▶"; margin-right: 10px; color: #3498db; }
+.form-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+gap: 20px;
+margin-bottom: 20px;
+}
+.intern-list {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+gap: 20px;
+margin-top: 20px;
+}
+.intern-card {
+background: white;
+border: 2px solid #e1e8ed;
+border-radius: 10px;
+padding: 20px;
+transition: all 0.3s;
+}
+.intern-card:hover {
+border-color: #3498db;
+transform: translateY(-2px);
+box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+.intern-name { font-weight: 700; color: #2c3e50; font-size: 1.1rem; }
+.posting-item {
+background: #f8f9fa;
+border-radius: 6px;
+padding: 10px;
+margin: 8px 0;
+border-left: 3px solid #3498db;
+}
+.action-buttons { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+.action-buttons .btn { padding: 8px 15px; font-size: 0.8rem; }
+.modal {
+display: none;
+position: fixed;
+z-index: 1000;
+left: 0;
+top: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0,0,0,0.5);
+}
+.modal-content {
+background-color: white;
+margin: 3% auto;
+padding: 30px;
+border-radius: 15px;
+width: 90%;
+max-width: 900px;
+max-height: 85vh;
+overflow-y: auto;
+}
+.close {
+color: #aaa;
+float: right;
+font-size: 28px;
+font-weight: bold;
+cursor: pointer;
+}
+.close:hover { color: #000; }
+.bulk-entry-row {
+display: grid;
+grid-template-columns: 50px 2fr 2fr 2fr auto;
+gap: 10px;
+align-items: center;
+margin-bottom: 10px;
+padding: 10px;
+background: #f8f9fa;
+border-radius: 5px;
+}
+.progress-bar {
+background: #ecf0f1;
+border-radius: 20px;
+height: 20px;
+margin: 10px 0;
+overflow: hidden;
+}
+.progress-fill {
+height: 100%;
+background: linear-gradient(90deg, #27ae60, #2ecc71);
+border-radius: 20px;
+transition: width 0.3s ease;
+display: flex;
+align-items: center;
+justify-content: center;
+color: white;
+font-weight: 600;
+font-size: 0.8rem;
+}
+@media (max-width: 768px) {
+.form-grid, .login-form { grid-template-columns: 1fr; }
+.intern-list { grid-template-columns: 1fr; }
+.bulk-entry-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL, VARUR</h1>
+<p>SMART INTERN ROTATION & POSTINGS MANAGEMENT SYSTEM</p>
+</div>
+<div class="main-content">
+<div class="view-toggle">
+<button id="adminViewBtn" class="active" onclick="switchView('admin')">Admin Portal</button>
+</div>
+
+<div id="adminLoginSection" class="login-section">
+<h3 style="color: #3498db; margin-bottom: 15px;">🔐 Admin Login</h3>
+<div class="login-form">
+<div class="form-group">
+<label>Username</label>
+<input type="text" id="adminUsername" placeholder="admin">
+</div>
+<div class="form-group">
+<label>Password</label>
+<input type="password" id="adminPassword" placeholder="password">
+</div>
+<button class="btn btn-primary" onclick="adminLogin()">Login</button>
+</div>
+<div id="adminError" style="color: #e74c3c; margin-top: 10px; display: none;"></div>
+</div>
+
+<div id="adminSections" style="display: none;">
+<!-- Bulk Intern Entry -->
+<div class="section">
+<h2>📋 Bulk Intern Entry (Up to 60 Students)</h2>
+<p style="color: #7f8c8d; margin-bottom: 15px;">Add multiple interns at once. Each intern will get an auto-generated rotation schedule.</p>
+<div style="margin-bottom: 15px;">
+<button class="btn btn-success" onclick="showBulkEntryModal()">+ Add Multiple Interns</button>
+<button class="btn btn-primary" onclick="showSingleInternModal()">+ Add Single Intern</button>
+<button class="btn btn-warning" onclick="generateAllRotations()">🔄 Generate All Rotations</button>
+</div>
+<div style="background: white; padding: 15px; border-radius: 8px; margin-top: 15px;">
+<h4 style="color: #2c3e50; margin-bottom: 10px;">Quick Stats</h4>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+<div style="text-align: center; padding: 15px; background: #e3f2fd; border-radius: 8px;">
+<div style="font-size: 2rem; font-weight: bold; color: #3498db;" id="totalInterns">0</div>
+<div style="font-size: 0.9rem; color: #7f8c8d;">Total Interns</div>
+</div>
+<div style="text-align: center; padding: 15px; background: #e8f5e9; border-radius: 8px;">
+<div style="font-size: 2rem; font-weight: bold; color: #27ae60;" id="completedInterns">0</div>
+<div style="font-size: 0.9rem; color: #7f8c8d;">Completed (365d)</div>
+</div>
+<div style="text-align: center; padding: 15px; background: #fff3e0; border-radius: 8px;">
+<div style="font-size: 2rem; font-weight: bold; color: #f39c12;" id="pendingInterns">0</div>
+<div style="font-size: 0.9rem; color: #7f8c8d;">In Progress</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Manage Interns -->
+<div class="section">
+<h2>👥 Manage Interns & Postings</h2>
+<input type="text" id="searchIntern" placeholder="🔍 Search by name or registration number..." oninput="renderInterns()" style="width: 100%; max-width: 400px; margin-bottom: 20px;">
+<div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 20px;">
+<button class="btn btn-success" onclick="exportAllData()">💾 Export All Data</button>
+<button class="btn btn-primary" onclick="importData()">📥 Import Data</button>
+<input type="file" id="importFile" accept=".json" style="display: none;" onchange="handleImport(event)">
+<button class="btn btn-primary" onclick="generateMasterChart()">📊 Master Chart (All Interns)</button>
+<button class="btn btn-secondary" onclick="generateMasterCalendar()">📅 Master Calendar</button>
+<button class="btn btn-warning" onclick="debugInterns()">🔍 Debug Check</button>
+</div>
+<div class="intern-list" id="internList"></div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Bulk Entry Modal -->
+<div id="bulkEntryModal" class="modal">
+<div class="modal-content">
+<span class="close" onclick="closeModal('bulkEntryModal')">&times;</span>
+<h2>📋 Bulk Intern Entry</h2>
+<p style="color: #7f8c8d; margin-bottom: 20px;">Add up to 60 interns. Leave rows empty if you have fewer interns.</p>
+<div style="margin-bottom: 20px;">
+<button class="btn btn-primary" onclick="addBulkRows(10)">+ Add 10 Rows</button>
+<button class="btn btn-secondary" onclick="clearBulkForm()">Clear All</button>
+</div>
+<div id="bulkEntryContainer" style="max-height: 400px; overflow-y: auto;"></div>
+<div style="text-align: center; margin-top: 20px;">
+<button class="btn btn-success" onclick="saveBulkInterns()">💾 Save All Interns</button>
+<button class="btn btn-secondary" onclick="closeModal('bulkEntryModal')">Cancel</button>
+</div>
+</div>
+</div>
+
+<!-- Single Intern Modal -->
+<div id="singleInternModal" class="modal">
+<div class="modal-content">
+<span class="close" onclick="closeModal('singleInternModal')">&times;</span>
+<h2>+ Add Single Intern</h2>
+<div class="form-grid">
+<div class="form-group">
+<label>Intern Name *</label>
+<input type="text" id="singleInternName">
+</div>
+<div class="form-group">
+<label>Registration Number *</label>
+<input type="text" id="singleInternRegNo">
+</div>
+<div class="form-group">
+<label>Start Date *</label>
+<input type="date" id="singleInternStartDate">
+</div>
+</div>
+<div style="text-align: center; margin-top: 20px;">
+<button class="btn btn-primary" onclick="saveSingleIntern()">Save Intern</button>
+<button class="btn btn-secondary" onclick="closeModal('singleInternModal')">Cancel</button>
+</div>
+</div>
+</div>
+
+<!-- Department Letter Modal -->
+<div id="departmentLetterModal" class="modal">
+<div class="modal-content">
+<span class="close" onclick="closeModal('departmentLetterModal')">&times;</span>
+<h2>📝 Generate Department-Specific Posting Letter</h2>
+<div id="departmentLetterInternInfo" style="background: #e8f8ff; padding: 15px; border-radius: 8px; margin: 20px 0;">
+<!-- Intern info will be displayed here -->
+</div>
+<div class="form-group" style="margin: 20px 0;">
+<label style="font-size: 1.1em; margin-bottom: 10px; display: block;">Select Department *</label>
+<select id="departmentLetterSelect" style="width: 100%; padding: 12px; font-size: 1em;" onchange="updateDepartmentLetterPreview()">
+<option value="">-- Select a Department --</option>
+</select>
+</div>
+<div id="departmentLetterPreview" style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0; display: none;">
+<!-- Preview will be shown here -->
+</div>
+<div style="text-align: center; margin-top: 20px;">
+<button class="btn btn-success" onclick="generateDepartmentLetter()" id="generateDeptLetterBtn" disabled>📄 Generate Letter</button>
+<button class="btn btn-secondary" onclick="closeModal('departmentLetterModal')">Cancel</button>
+</div>
+</div>
+</div>
+
+<script>
+let interns = JSON.parse(localStorage.getItem('internData') || '[]');
+let currentInternForDeptLetter = null;
+const adminCreds = {
+'admin': { password: 'admin2025', role: 'Administrator' },
+'medsup': { password: 'ms2025', role: 'Medical Superintendent' },
+'principal': { password: 'prin2025', role: 'Principal' }
+};
+
+// 18 Departments with exact durations (Total: 365 days) - FINAL
+const departments = [
+{ name: 'KAYACHIKITSA', code: 'KC', days: 45 },  // Increased back to 45
+{ name: 'SWASTHAVRITTA', code: 'SW', days: 15 },
+{ name: 'SHALYA TANTRA', code: 'ST', days: 30 },
+{ name: 'SHALAKYA TANTRA', code: 'SKT', days: 15 },
+{ name: 'PRASUTI TANTRA & STREE ROGA', code: 'PTSR', days: 15 },
+{ name: 'KAUMARABHRITYA', code: 'KB', days: 15 },
+{ name: 'PANCHAKARMA', code: 'PK', days: 35 },  // Increased to 35
+{ name: 'AGADA TANTRA', code: 'AT', days: 15 },
+{ name: 'ATYAYIKA', code: 'ATY', days: 15 },
+{ name: 'LABORATORY', code: 'LAB', days: 15 },
+{ name: 'SCREENING OPD', code: 'SCR', days: 15 },
+{ name: 'PHARMACY', code: 'PHM', days: 15 },  // Reduced to 15
+{ name: 'AYUSH', code: 'AYU', days: 30 },
+{ name: 'PHYSIOTHERAPY', code: 'PHYSIO', days: 15 },
+{ name: 'SPARSHA PEDIATRIC HOSPITAL', code: 'SPH', days: 15 },
+{ name: 'AGARWAL EYE HOSPITAL', code: 'AEH', days: 15 },
+{ name: 'CANCER HOSPITAL', code: 'CANC', days: 15 },
+{ name: 'SURGICAL & MATERNITY HOSPITAL', code: 'SMH', days: 30 }
+];
+
+// Department-specific training objectives and expectations
+const departmentDetails = {
+  'KAYACHIKITSA': {
+    objectives: [
+      'Diagnosis and management of common medical disorders',
+      'Patient history taking and clinical examination skills',
+      'Understanding of Ayurvedic diagnostic principles (Nadi, Mutra, Mala Pareeksha)',
+      'Management of chronic diseases like diabetes, hypertension, arthritis',
+      'Panchakarma preparation and follow-up care',
+      'Indoor patient management and documentation'
+    ],
+    skills: [
+      'Clinical examination techniques',
+      'Case history documentation',
+      'Treatment planning',
+      'Patient counseling',
+      'Dietary recommendations',
+      'Lifestyle modifications'
+    ]
+  },
+  'SWASTHAVRITTA': {
+    objectives: [
+      'Understanding of preventive and social medicine',
+      'Health education and community outreach programs',
+      'Personal and environmental hygiene practices',
+      'Seasonal regimen (Ritucharya) counseling',
+      'Daily regimen (Dinacharya) implementation'
+    ],
+    skills: [
+      'Health awareness campaigns',
+      'Community health assessments',
+      'Yoga and meditation guidance',
+      'Nutritional counseling'
+    ]
+  },
+  'SHALYA TANTRA': {
+    objectives: [
+      'Pre-operative and post-operative care',
+      'Wound management and dressing techniques',
+      'Ksharasutra therapy application',
+      'Minor surgical procedures',
+      'Management of ano-rectal disorders',
+      'Burn and trauma care'
+    ],
+    skills: [
+      'Sterile techniques',
+      'Suturing and wound closure',
+      'Bandaging methods',
+      'Instrument handling',
+      'Patient positioning'
+    ]
+  },
+  'SHALAKYA TANTRA': {
+    objectives: [
+      'ENT and ophthalmology examination',
+      'Management of common eye, ear, nose, and throat disorders',
+      'Netra Kriyakalpa (ocular therapeutic procedures)',
+      'Karna Purana, Nasya administration',
+      'Vision and hearing assessments'
+    ],
+    skills: [
+      'Ophthalmoscopy',
+      'Otoscopy',
+      'Nasal examination',
+      'Eye drops and ear drops administration',
+      'Throat examination'
+    ]
+  },
+  'PRASUTI TANTRA & STREE ROGA': {
+    objectives: [
+      'Antenatal care and examination',
+      'Normal delivery assistance',
+      'Postnatal care management',
+      'Management of gynecological disorders',
+      'Family planning counseling',
+      'Menstrual disorder management'
+    ],
+    skills: [
+      'Obstetric examination',
+      'Fetal heart monitoring',
+      'Yoni Prakshalanam',
+      'Uttarbasti procedures',
+      'Breast feeding support'
+    ]
+  },
+  'KAUMARABHRITYA': {
+    objectives: [
+      'Pediatric examination and growth monitoring',
+      'Immunization schedule implementation',
+      'Management of common childhood diseases',
+      'Nutritional assessment in children',
+      'Developmental milestone monitoring',
+      'Neonatal care'
+    ],
+    skills: [
+      'Pediatric vital signs monitoring',
+      'Growth chart plotting',
+      'Infant feeding counseling',
+      'Basic pediatric procedures',
+      'Parent education'
+    ]
+  },
+  'PANCHAKARMA': {
+    objectives: [
+      'Understanding of Panchakarma procedures and their indications',
+      'Vamana, Virechana, Basti, Nasya, Raktamokshana administration',
+      'Poorvakarma (Snehana and Swedana) procedures',
+      'Patient assessment for Panchakarma suitability',
+      'Post-Panchakarma care (Samsarjana Krama)',
+      'Documentation of Panchakarma procedures'
+    ],
+    skills: [
+      'Abhyanga (therapeutic massage)',
+      'Swedana (sudation therapy)',
+      'Basti administration',
+      'Nasya procedures',
+      'Oil preparation for therapies',
+      'Patient monitoring during procedures'
+    ]
+  },
+  'AGADA TANTRA': {
+    objectives: [
+      'Identification of poisoning cases',
+      'Management of acute poisoning',
+      'Snake bite and insect bite management',
+      'Food poisoning treatment',
+      'Medico-legal aspects of toxicology',
+      'Forensic examination procedures'
+    ],
+    skills: [
+      'Emergency management protocols',
+      'Stomach wash procedures',
+      'Antidote administration',
+      'Medico-legal documentation',
+      'Post-mortem examination assistance'
+    ]
+  },
+  'ATYAYIKA': {
+    objectives: [
+      'Emergency and casualty management',
+      'Triage and prioritization',
+      'Basic life support (BLS)',
+      'Management of trauma cases',
+      'Acute medical emergencies',
+      'First aid administration'
+    ],
+    skills: [
+      'CPR techniques',
+      'Emergency drug administration',
+      'IV line insertion',
+      'Oxygen therapy',
+      'Vital signs monitoring',
+      'Emergency documentation'
+    ]
+  },
+  'LABORATORY': {
+    objectives: [
+      'Collection of blood, urine, and stool samples',
+      'Basic laboratory investigation procedures',
+      'Interpretation of common lab reports',
+      'Microscopic examination techniques',
+      'Quality control in laboratory',
+      'Laboratory safety protocols'
+    ],
+    skills: [
+      'Venipuncture',
+      'Sample collection and handling',
+      'Urine analysis',
+      'Blood grouping',
+      'Hemoglobin estimation',
+      'Report interpretation'
+    ]
+  },
+  'SCREENING OPD': {
+    objectives: [
+      'Initial patient assessment and vital signs recording',
+      'Patient registration and documentation',
+      'Basic health screening procedures',
+      'Preliminary diagnosis and referral',
+      'Patient flow management',
+      'Health record maintenance'
+    ],
+    skills: [
+      'Blood pressure measurement',
+      'Temperature recording',
+      'Weight and height measurement',
+      'Patient interview techniques',
+      'Computer-based registration'
+    ]
+  },
+  'PHARMACY': {
+    objectives: [
+      'Identification of medicinal plants and drugs',
+      'Understanding of pharmaceutical procedures',
+      'Drug dispensing and labeling',
+      'Storage and preservation of medicines',
+      'Preparation of common Ayurvedic formulations',
+      'Pharmacy inventory management'
+    ],
+    skills: [
+      'Drug identification',
+      'Proper dispensing techniques',
+      'Dosage calculations',
+      'Medicine labeling',
+      'Patient counseling on drug use',
+      'Expiry date monitoring'
+    ]
+  },
+  'AYUSH': {
+    objectives: [
+      'Integration of different AYUSH systems',
+      'Understanding of Yoga, Naturopathy, Unani, Siddha',
+      'Holistic patient care approach',
+      'Complementary therapy administration',
+      'Documentation of AYUSH treatments'
+    ],
+    skills: [
+      'Yoga therapy techniques',
+      'Naturopathy procedures',
+      'Integrative medicine approach',
+      'Patient assessment',
+      'Treatment planning'
+    ]
+  },
+  'PHYSIOTHERAPY': {
+    objectives: [
+      'Assessment of musculoskeletal disorders',
+      'Physiotherapy treatment planning',
+      'Exercise therapy prescription',
+      'Rehabilitation protocols',
+      'Electrotherapy applications',
+      'Mobility and gait training'
+    ],
+    skills: [
+      'Manual therapy techniques',
+      'Exercise demonstration',
+      'Electrical modalities use',
+      'Patient mobilization',
+      'Home exercise program design'
+    ]
+  },
+  'SPARSHA PEDIATRIC HOSPITAL': {
+    objectives: [
+      'Advanced pediatric care exposure',
+      'Management of complex pediatric cases',
+      'NICU and PICU procedures',
+      'Pediatric emergency management',
+      'Specialized pediatric investigations',
+      'Multidisciplinary pediatric care'
+    ],
+    skills: [
+      'Advanced pediatric examination',
+      'Pediatric emergency protocols',
+      'Neonatal resuscitation',
+      'Pediatric IV access',
+      'Ventilator basics'
+    ]
+  },
+  'AGARWAL EYE HOSPITAL': {
+    objectives: [
+      'Comprehensive eye examination',
+      'Management of common eye diseases',
+      'Pre and post-operative eye care',
+      'Cataract surgery assistance',
+      'Refraction and vision testing',
+      'Eye emergency management'
+    ],
+    skills: [
+      'Visual acuity testing',
+      'Slit lamp examination',
+      'Tonometry',
+      'Fundoscopy',
+      'Eye drop administration',
+      'Post-operative care'
+    ]
+  },
+  'CANCER HOSPITAL': {
+    objectives: [
+      'Understanding of oncology basics',
+      'Cancer patient care and counseling',
+      'Palliative care principles',
+      'Chemotherapy assistance',
+      'Pain management in cancer',
+      'Psychological support to cancer patients'
+    ],
+    skills: [
+      'Cancer patient assessment',
+      'Supportive care techniques',
+      'Pain assessment tools',
+      'Nutritional support',
+      'Family counseling',
+      'End-of-life care'
+    ]
+  },
+  'SURGICAL & MATERNITY HOSPITAL': {
+    objectives: [
+      'Advanced surgical care exposure',
+      'Major surgical procedures assistance',
+      'Obstetric emergency management',
+      'High-risk pregnancy care',
+      'Operation theatre protocols',
+      'Post-operative intensive care'
+    ],
+    skills: [
+      'Surgical scrubbing techniques',
+      'Assisting in major surgeries',
+      'Labor room management',
+      'Cesarean section assistance',
+      'Post-operative monitoring',
+      'Surgical instrument identification'
+    ]
+  }
+};
+
+function switchView(view) {
+document.getElementById('adminViewBtn').classList.toggle('active', view === 'admin');
+document.getElementById('adminLoginSection').style.display = view === 'admin' ? 'block' : 'none';
+document.getElementById('adminSections').style.display = 'none';
+}
+
+function adminLogin() {
+const user = document.getElementById('adminUsername').value.trim();
+const pass = document.getElementById('adminPassword').value.trim();
+const err = document.getElementById('adminError');
+if (adminCreds[user] && adminCreds[user].password === pass) {
+document.getElementById('adminLoginSection').style.display = 'none';
+document.getElementById('adminSections').style.display = 'block';
+updateStats();
+renderInterns();
+} else {
+err.textContent = '❌ Invalid credentials';
+err.style.display = 'block';
+}
+}
+
+function showBulkEntryModal() {
+document.getElementById('bulkEntryModal').style.display = 'block';
+clearBulkForm();
+addBulkRows(10);
+}
+
+function showSingleInternModal() {
+document.getElementById('singleInternModal').style.display = 'block';
+document.getElementById('singleInternStartDate').valueAsDate = new Date();
+}
+
+function addBulkRows(count) {
+const container = document.getElementById('bulkEntryContainer');
+const currentRows = container.children.length;
+const today = new Date().toISOString().split('T')[0];
+for (let i = 0; i < count && currentRows + i < 60; i++) {
+const row = document.createElement('div');
+row.className = 'bulk-entry-row';
+row.innerHTML = `
+<div style="font-weight: bold; color: #2c3e50;">${currentRows + i + 1}</div>
+<input type="text" placeholder="Enter intern name" class="bulk-name" style="padding: 10px; border: 2px solid #e1e8ed; border-radius: 5px;">
+<input type="text" placeholder="Enter reg number" class="bulk-regno" style="padding: 10px; border: 2px solid #e1e8ed; border-radius: 5px;">
+<input type="date" class="bulk-date" value="${today}" style="padding: 10px; border: 2px solid #e1e8ed; border-radius: 5px;">
+<button class="btn btn-danger" onclick="this.parentElement.remove()" style="padding: 8px 12px;">×</button>
+`;
+container.appendChild(row);
+}
+}
+
+function clearBulkForm() {
+document.getElementById('bulkEntryContainer').innerHTML = '';
+}
+
+function saveBulkInterns() {
+const rows = document.querySelectorAll('.bulk-entry-row');
+let added = 0;
+const errors = [];
+rows.forEach((row, index) => {
+const name = row.querySelector('.bulk-name').value.trim();
+const regNo = row.querySelector('.bulk-regno').value.trim();
+const startDate = row.querySelector('.bulk-date').value;
+
+console.log(`Row ${index + 1}: Name="${name}", RegNo="${regNo}", Date="${startDate}"`);
+
+if (name && regNo && startDate) {
+// Validate date format
+const dateTest = new Date(startDate);
+if (isNaN(dateTest.getTime())) {
+errors.push(`Row ${index + 1}: Invalid date format`);
+return;
+}
+
+// Check if registration number already exists
+if (interns.some(i => i.regNo === regNo)) {
+errors.push(`Row ${index + 1}: Registration number "${regNo}" already exists`);
+} else {
+interns.push({
+id: Date.now() + Math.random(),
+name,
+regNo,
+startDate,
+postings: [],
+totalDays: 0,
+rotationGenerated: false
+});
+added++;
+console.log(`✓ Added: ${name}`);
+}
+} else if (name || regNo || startDate) {
+errors.push(`Row ${index + 1}: Please fill all fields (Name, Reg No, Date)`);
+}
+});
+
+if (errors.length > 0) {
+alert('⚠️ Some issues found:\n\n' + errors.join('\n'));
+}
+
+if (added > 0) {
+localStorage.setItem('internData', JSON.stringify(interns));
+console.log('Saved to localStorage. Total interns:', interns.length);
+updateStats();
+renderInterns();
+closeModal('bulkEntryModal');
+clearBulkForm();
+alert(`✅ Successfully added ${added} interns!${errors.length > 0 ? '\n\nNote: ' + errors.length + ' rows had issues (see above)' : ''}\n\nNext step: Click "🔄 Generate All Rotations" to create 365-day schedules.`);
+} else {
+if (errors.length === 0) {
+alert('⚠️ No valid data found. Please fill in:\n• Name\n• Registration Number\n• Start Date\n\nfor each intern you want to add.');
+}
+}
+}
+
+function saveSingleIntern() {
+const name = document.getElementById('singleInternName').value.trim();
+const regNo = document.getElementById('singleInternRegNo').value.trim();
+const startDate = document.getElementById('singleInternStartDate').value;
+if (!name || !regNo || !startDate) {
+alert('⚠️ Please fill all fields');
+return;
+}
+if (interns.some(i => i.regNo === regNo)) {
+alert('⚠️ Registration number already exists');
+return;
+}
+interns.push({
+id: Date.now(),
+name, regNo, startDate,
+postings: [],
+totalDays: 0,
+rotationGenerated: false
+});
+localStorage.setItem('internData', JSON.stringify(interns));
+document.getElementById('singleInternName').value = '';
+document.getElementById('singleInternRegNo').value = '';
+updateStats();
+renderInterns();
+closeModal('singleInternModal');
+alert('✅ Intern added successfully!');
+}
+
+function generateAllRotations() {
+if (interns.length === 0) {
+alert('⚠️ Please add interns first');
+return;
+}
+const internsToGenerate = interns.filter(i => !i.rotationGenerated || i.postings.length === 0);
+if (internsToGenerate.length === 0) {
+alert('ℹ️ All interns already have rotations generated!\n\nTo regenerate, delete and re-add interns, or delete their postings manually.');
+return;
+}
+if (!confirm(`🔄 Generate automatic rotations for ${internsToGenerate.length} interns?\n\n✓ Creates complete 365-day schedules\n✓ First 90 days: In-house training (Depts 1-12)\n✓ After 90 days: External postings allowed (Depts 13-18)\n✓ All 18 departments included\n✓ Minimizes overlaps\n\nProceed?`)) {
+return;
+}
+
+console.log('Starting rotation generation with 90-day in-house rule...');
+console.log('Total departments:', departments.length);
+
+// Separate in-house (1-12) and external (13-18) departments
+const inHouseDepts = departments.slice(0, 12); // Departments 1-12
+const externalDepts = departments.slice(12, 18); // Departments 13-18
+
+console.log('In-house departments:', inHouseDepts.map(d => d.code).join(', '));
+console.log('External departments:', externalDepts.map(d => d.code).join(', '));
+
+let generatedCount = 0;
+internsToGenerate.forEach((intern, internIndex) => {
+console.log(`\n=== Generating for ${intern.name} (Index: ${internIndex}) ===`);
+
+// Parse the start date properly
+const startDate = new Date(intern.startDate);
+if (isNaN(startDate.getTime())) {
+console.error(`Invalid start date for ${intern.name}: ${intern.startDate}`);
+alert(`⚠️ Invalid start date for ${intern.name}. Please check the date format.`);
+return;
+}
+
+let currentDate = new Date(startDate);
+let accumulatedDays = 0;
+intern.postings = [];
+
+// PHASE 1: First 90 days - Only in-house departments (1-12)
+console.log('PHASE 1: Scheduling in-house departments for first 90 days...');
+const shuffledInHouse = shuffleWithOffset([...inHouseDepts], internIndex);
+let phase1Postings = [];
+let phase1Days = 0;
+
+for (let dept of shuffledInHouse) {
+if (phase1Days >= 90) break; // Stop once we hit 90 days
+const fromDate = new Date(currentDate);
+const toDate = new Date(currentDate);
+toDate.setDate(toDate.getDate() + dept.days - 1);
+
+const posting = {
+id: Date.now() + internIndex * 10000 + phase1Postings.length * 100 + Math.random(),
+department: dept.name,
+fromDate: fromDate.toISOString().split('T')[0],
+toDate: toDate.toISOString().split('T')[0],
+days: dept.days
+};
+
+phase1Postings.push(posting);
+phase1Days += dept.days;
+currentDate.setDate(currentDate.getDate() + dept.days);
+
+console.log(`  ✓ ${dept.code}: ${posting.fromDate} to ${posting.toDate} (${dept.days} days) - Total so far: ${phase1Days} days`);
+}
+
+console.log(`Phase 1 complete: ${phase1Days} days in-house`);
+intern.postings = [...phase1Postings];
+accumulatedDays = phase1Days;
+
+// PHASE 2: After 90 days - Mix remaining in-house and all external departments
+console.log('PHASE 2: Scheduling remaining departments after 90 days...');
+
+// Get remaining in-house departments that weren't scheduled in Phase 1
+const remainingInHouse = shuffledInHouse.filter(dept => 
+!phase1Postings.some(p => p.department === dept.name)
+);
+
+// Combine remaining in-house with external departments
+const shuffledExternal = shuffleWithOffset([...externalDepts], internIndex);
+const phase2Depts = [...remainingInHouse, ...shuffledExternal];
+
+phase2Depts.forEach((dept, deptIndex) => {
+const fromDate = new Date(currentDate);
+const toDate = new Date(currentDate);
+toDate.setDate(toDate.getDate() + dept.days - 1);
+
+const posting = {
+id: Date.now() + internIndex * 10000 + intern.postings.length * 100 + Math.random(),
+department: dept.name,
+fromDate: fromDate.toISOString().split('T')[0],
+toDate: toDate.toISOString().split('T')[0],
+days: dept.days
+};
+
+intern.postings.push(posting);
+accumulatedDays += dept.days;
+currentDate.setDate(currentDate.getDate() + dept.days);
+
+console.log(`  ✓ ${dept.code}: ${posting.fromDate} to ${posting.toDate} (${dept.days} days) - Total: ${accumulatedDays} days`);
+});
+
+intern.totalDays = intern.postings.reduce((sum, p) => sum + p.days, 0);
+intern.rotationGenerated = true;
+generatedCount++;
+
+console.log(`✓ ${intern.name}: ${intern.postings.length} departments, ${intern.totalDays} total days`);
+console.log(`  First 90 days: ${phase1Days} days in-house`);
+console.log(`  Remaining: ${intern.totalDays - phase1Days} days (mixed)`);
+});
+
+// Save to localStorage
+localStorage.setItem('internData', JSON.stringify(interns));
+console.log('Saved to localStorage');
+
+// Reload from localStorage to verify
+interns = JSON.parse(localStorage.getItem('internData') || '[]');
+console.log('Reloaded from localStorage');
+console.log('Verification:', interns.map(i => `${i.name}: ${i.postings.length} postings, ${i.totalDays} days`));
+
+updateStats();
+renderInterns();
+alert(`✅ SUCCESS! Generated rotations for ${generatedCount} interns!\n\n📊 Each intern now has:\n• Complete 365-day schedule\n• First 90+ days: In-house training only (Depts 1-12)\n• After 90 days: Mixed in-house + external postings\n• All 18 departments assigned\n• Total: ${interns[0]?.totalDays || 365} days\n\n📅 TO VIEW:\n1. Click "📊 Individual Chart" for table view\n2. Click "📅 Calendar" for month view\n3. Click "📄 Complete Posting Letter" for full schedule\n4. Click "📝 Department Letter" for specific department`);
+}
+
+function shuffleWithOffset(array, offset) {
+const result = [...array];
+const rotate = offset % array.length;
+return [...result.slice(rotate), ...result.slice(0, rotate)];
+}
+
+function renderInterns() {
+const search = document.getElementById('searchIntern').value.toLowerCase();
+const filtered = interns.filter(i =>
+i.name.toLowerCase().includes(search) || i.regNo.toLowerCase().includes(search)
+);
+document.getElementById('internList').innerHTML = filtered.map(intern => {
+const progress = (intern.totalDays / 365) * 100;
+const isComplete = intern.totalDays >= 365;
+return `
+<div class="intern-card">
+<div class="intern-name">${intern.name}</div>
+<div style="color: #7f8c8d; margin-bottom: 10px;">
+Reg: ${intern.regNo} | Start: ${new Date(intern.startDate).toLocaleDateString()}
+</div>
+<div class="progress-bar">
+<div class="progress-fill" style="width: ${Math.min(progress, 100)}%">
+${Math.round(progress)}%
+</div>
+</div>
+<div style="margin: 10px 0;">
+<strong>Days:</strong> ${intern.totalDays}/365 |
+<strong>Depts:</strong> ${intern.postings.length}/18
+${intern.rotationGenerated ? '<span style="color: #27ae60;">✓ Auto-Generated</span>' : ''}
+</div>
+<div style="max-height: 150px; overflow-y: auto;">
+${intern.postings.slice(0, 5).map(p => `
+<div class="posting-item">
+<strong>${p.department}</strong><br>
+<small>${new Date(p.fromDate).toLocaleDateString()} - ${new Date(p.toDate).toLocaleDateString()}</small>
+<small style="color: #27ae60; display: block;">${p.days} days</small>
+</div>
+`).join('')}
+${intern.postings.length > 5 ? `<div style="text-align: center; color: #7f8c8d; font-size: 0.9em;">+ ${intern.postings.length - 5} more departments</div>` : ''}
+</div>
+<div class="action-buttons">
+<button class="btn btn-primary" onclick="generateIndividualChart(${intern.id})">📊 Individual Chart</button>
+<button class="btn btn-success" onclick="generateCalendar(${intern.id})">📅 Calendar</button>
+<button class="btn btn-warning" onclick="generatePostingLetter(${intern.id})">📄 Complete Posting Letter</button>
+<button class="btn btn-secondary" onclick="showDepartmentLetterModal(${intern.id})">📝 Department Letter</button>
+<button class="btn btn-danger" onclick="deleteIntern(${intern.id})">🗑️ Delete</button>
+</div>
+</div>
+`}).join('');
+}
+
+function generateIndividualChart(internId) {
+const intern = interns.find(i => i.id === internId);
+if (!intern || !intern.postings.length) {
+alert('⚠️ No postings found for this intern');
+return;
+}
+const html = generateChartHTML([intern], false);
+downloadFile(html, `Individual_Chart_${intern.name.replace(/\s/g, '_')}.html`);
+alert('✅ Individual chart downloaded!');
+}
+
+function generateMasterChart() {
+if (!interns.length || !interns.some(i => i.postings.length)) {
+alert('⚠️ No interns with postings found');
+return;
+}
+const html = generateChartHTML(interns.filter(i => i.postings.length), true);
+downloadFile(html, `Master_Posting_Chart_${new Date().toISOString().split('T')[0]}.html`);
+alert('✅ Master chart generated for all interns!');
+}
+
+function generateChartHTML(internsList, isMaster) {
+let html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<title>${isMaster ? 'Master Posting Chart' : 'Individual Posting Chart'}</title>
+<style>
+body { font-family: Arial; padding: 30px; }
+h1, h2 { text-align: center; color: #2c3e50; }
+table { width: 100%; border-collapse: collapse; margin: 20px 0; page-break-inside: avoid; }
+th, td { border: 1px solid #ddd; padding: 10px; text-align: left; font-size: 0.9em; }
+th { background: #3498db; color: white; font-weight: 600; }
+.dept-code { background: #e3f2fd; padding: 3px 8px; border-radius: 3px; font-weight: 600; }
+@media print { .no-print { display: none; } }
+</style></head><body>
+<h1>JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL, VARUR</h1>
+<h2>${isMaster ? 'MASTER POSTING CHART - ALL INTERNS' : 'INDIVIDUAL POSTING CHART'}</h2>
+<p style="text-align: center; color: #7f8c8d;">Generated on: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>`;
+
+internsList.forEach((intern, idx) => {
+html += `
+<div style="margin: 30px 0; page-break-inside: avoid;">
+<h3 style="background: #3498db; color: white; padding: 15px; border-radius: 8px;">
+${intern.name} (${intern.regNo}) - Start Date: ${new Date(intern.startDate).toLocaleDateString()}
+</h3>
+<table>
+<thead>
+<tr>
+<th style="width: 50px;">S.No</th>
+<th>Department</th>
+<th>Code</th>
+<th>From Date</th>
+<th>To Date</th>
+<th>Days</th>
+</tr>
+</thead>
+<tbody>`;
+
+intern.postings.forEach((posting, pIdx) => {
+const dept = departments.find(d => d.name === posting.department);
+html += `
+<tr>
+<td style="text-align: center;">${pIdx + 1}</td>
+<td><strong>${posting.department}</strong></td>
+<td><span class="dept-code">${dept ? dept.code : 'N/A'}</span></td>
+<td>${new Date(posting.fromDate).toLocaleDateString()}</td>
+<td>${new Date(posting.toDate).toLocaleDateString()}</td>
+<td style="text-align: center; font-weight: 600;">${posting.days}</td>
+</tr>`;
+});
+
+html += `
+<tr style="background: #f8f9fa; font-weight: bold;">
+<td colspan="5" style="text-align: right;">TOTAL DAYS:</td>
+<td style="text-align: center; color: ${intern.totalDays >= 365 ? '#27ae60' : '#e74c3c'};">${intern.totalDays}/365</td>
+</tr>
+</tbody>
+</table>
+</div>`;
+});
+
+html += `
+<div style="text-align: center; margin-top: 40px; padding: 20px; background: #ecf0f1; border-radius: 10px;">
+<p style="font-weight: bold; font-size: 1.1em;">THIS IS AN OFFICIAL DOCUMENT OF THE COLLEGE</p>
+<p style="margin-top: 10px; color: #7f8c8d;">Official posting schedule for internship completion.</p>
+</div>
+</body></html>`;
+
+return html;
+}
+
+function generateCalendar(internId) {
+const intern = interns.find(i => i.id === internId);
+if (!intern || !intern.postings.length) {
+alert('⚠️ No postings found');
+return;
+}
+const html = generateCalendarHTML([intern]);
+downloadFile(html, `Calendar_${intern.name.replace(/\s/g, '_')}.html`);
+alert('✅ Calendar generated!');
+}
+
+function generatePostingLetter(internId) {
+const intern = interns.find(i => i.id === internId);
+if (!intern || !intern.postings.length) {
+alert('⚠️ No postings found for this intern');
+return;
+}
+const html = generatePostingLetterHTML(intern);
+downloadFile(html, `Complete_Posting_Letter_${intern.name.replace(/\s/g, '_')}.html`);
+alert('✅ Complete posting letter with all departments generated!');
+}
+
+function showDepartmentLetterModal(internId) {
+const intern = interns.find(i => i.id === internId);
+if (!intern || !intern.postings.length) {
+alert('⚠️ No postings found for this intern');
+return;
+}
+
+currentInternForDeptLetter = intern;
+
+// Display intern info
+document.getElementById('departmentLetterInternInfo').innerHTML = `
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+<div><strong>Intern Name:</strong> ${intern.name}</div>
+<div><strong>Registration No:</strong> ${intern.regNo}</div>
+<div><strong>Start Date:</strong> ${new Date(intern.startDate).toLocaleDateString('en-GB')}</div>
+<div><strong>Total Postings:</strong> ${intern.postings.length} departments</div>
+</div>
+`;
+
+// Populate department dropdown
+const select = document.getElementById('departmentLetterSelect');
+select.innerHTML = '<option value="">-- Select a Department --</option>';
+intern.postings.forEach((posting, index) => {
+const dept = departments.find(d => d.name === posting.department);
+const option = document.createElement('option');
+option.value = index;
+option.textContent = `${posting.department} (${dept ? dept.code : 'N/A'}) - ${new Date(posting.fromDate).toLocaleDateString('en-GB')} to ${new Date(posting.toDate).toLocaleDateString('en-GB')} [${posting.days} days]`;
+select.appendChild(option);
+});
+
+// Reset preview
+document.getElementById('departmentLetterPreview').style.display = 'none';
+document.getElementById('generateDeptLetterBtn').disabled = true;
+
+// Show modal
+document.getElementById('departmentLetterModal').style.display = 'block';
+}
+
+function updateDepartmentLetterPreview() {
+const select = document.getElementById('departmentLetterSelect');
+const selectedIndex = select.value;
+
+if (selectedIndex === '') {
+document.getElementById('departmentLetterPreview').style.display = 'none';
+document.getElementById('generateDeptLetterBtn').disabled = true;
+return;
+}
+
+const posting = currentInternForDeptLetter.postings[selectedIndex];
+const dept = departments.find(d => d.name === posting.department);
+const details = departmentDetails[posting.department];
+
+let previewHTML = `
+<h4 style="color: #2c3e50; margin-bottom: 15px;">📋 Letter Preview</h4>
+<div style="background: white; padding: 15px; border-left: 4px solid #3498db; margin: 10px 0;">
+<p><strong>Department:</strong> ${posting.department}</p>
+<p><strong>Code:</strong> ${dept ? dept.code : 'N/A'}</p>
+<p><strong>Duration:</strong> ${new Date(posting.fromDate).toLocaleDateString('en-GB')} to ${new Date(posting.toDate).toLocaleDateString('en-GB')}</p>
+<p><strong>Days:</strong> ${posting.days} days</p>
+</div>
+`;
+
+if (details) {
+previewHTML += `
+<div style="margin-top: 15px;">
+<p><strong>Learning Objectives:</strong> ${details.objectives.length} objectives</p>
+<p><strong>Skills to Acquire:</strong> ${details.skills.length} skills</p>
+</div>
+`;
+}
+
+document.getElementById('departmentLetterPreview').innerHTML = previewHTML;
+document.getElementById('departmentLetterPreview').style.display = 'block';
+document.getElementById('generateDeptLetterBtn').disabled = false;
+}
+
+function generateDepartmentLetter() {
+const select = document.getElementById('departmentLetterSelect');
+const selectedIndex = select.value;
+
+if (selectedIndex === '' || !currentInternForDeptLetter) {
+alert('⚠️ Please select a department');
+return;
+}
+
+const posting = currentInternForDeptLetter.postings[selectedIndex];
+const html = generateDepartmentLetterHTML(currentInternForDeptLetter, posting);
+const dept = departments.find(d => d.name === posting.department);
+const filename = `${posting.department.replace(/\s+/g, '_')}_Letter_${currentInternForDeptLetter.name.replace(/\s/g, '_')}.html`;
+downloadFile(html, filename);
+alert(`✅ Department posting letter for ${posting.department} generated!`);
+closeModal('departmentLetterModal');
+}
+
+function generateDepartmentLetterHTML(intern, posting) {
+const dept = departments.find(d => d.name === posting.department);
+const details = departmentDetails[posting.department];
+
+let html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<title>Department Posting Letter - ${posting.department}</title>
+<style>
+body { font-family: 'Times New Roman', serif; padding: 40px; line-height: 1.6; }
+.letterhead { text-align: center; margin-bottom: 30px; border-bottom: 3px solid #2c3e50; padding-bottom: 20px; }
+.letterhead h1 { color: #2c3e50; font-size: 1.8em; margin: 10px 0; }
+.letterhead p { color: #7f8c8d; margin: 5px 0; }
+.ref-date { display: flex; justify-content: space-between; margin: 20px 0; font-weight: bold; }
+.subject { text-align: center; font-weight: bold; margin: 20px 0; text-decoration: underline; }
+.content { margin: 20px 0; text-align: justify; }
+.posting-box { background: #e3f2fd; border: 2px solid #3498db; padding: 20px; border-radius: 8px; margin: 20px 0; }
+.posting-box h3 { color: #2c3e50; margin: 0 0 15px 0; text-align: center; }
+.posting-details { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 15px 0; }
+.detail-item { background: white; padding: 10px; border-radius: 5px; }
+.detail-label { font-weight: bold; color: #2c3e50; }
+.objectives { margin: 25px 0; }
+.objectives h4 { color: #2c3e50; margin: 15px 0 10px 0; background: #f8f9fa; padding: 10px; border-left: 4px solid #3498db; }
+.objectives ul { margin: 10px 0 10px 20px; }
+.objectives li { margin: 8px 0; line-height: 1.5; }
+.important-box { background: #fff3cd; border: 2px solid #ffc107; padding: 15px; border-radius: 8px; margin: 20px 0; }
+.signature { margin-top: 60px; }
+.footer { margin-top: 40px; border-top: 2px solid #ddd; padding-top: 20px; }
+@media print { 
+  body { padding: 20px; }
+  .posting-box { page-break-inside: avoid; }
+}
+</style></head><body>
+
+<div class="letterhead">
+<h1>JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL</h1>
+<p>VARUR, KALABURAGI DISTRICT, KARNATAKA</p>
+<p>Affiliated to Rajiv Gandhi University of Health Sciences, Karnataka</p>
+<p>Email: jainagmayurvediccollege@gmail.com | Phone: +91-XXXXXXXXXX</p>
+</div>
+
+<div class="ref-date">
+<div>Ref No: JAIN-AGM/INTERN/${new Date().getFullYear()}/${intern.regNo}/${dept ? dept.code : 'DEPT'}</div>
+<div>Date: ${new Date().toLocaleDateString('en-GB')}</div>
+</div>
+
+<div class="content">
+<p><strong>To,</strong><br>
+<strong>${intern.name}</strong><br>
+Registration Number: <strong>${intern.regNo}</strong><br>
+Intern, BAMS Final Year</p>
+</div>
+
+<div class="subject">
+DEPARTMENT POSTING ORDER - ${posting.department}
+</div>
+
+<div class="content">
+<p>Dear ${intern.name.split(' ')[0]},</p>
+
+<p>This is to inform you that you have been posted to the <strong>${posting.department}</strong> for your rotatory internship training as per the approved internship schedule.</p>
+</div>
+
+<div class="posting-box">
+<h3>📋 POSTING DETAILS</h3>
+<div class="posting-details">
+<div class="detail-item">
+<span class="detail-label">Department:</span><br>
+${posting.department}
+</div>
+<div class="detail-item">
+<span class="detail-label">Department Code:</span><br>
+${dept ? dept.code : 'N/A'}
+</div>
+<div class="detail-item">
+<span class="detail-label">From Date:</span><br>
+${new Date(posting.fromDate).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+</div>
+<div class="detail-item">
+<span class="detail-label">To Date:</span><br>
+${new Date(posting.toDate).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+</div>
+<div class="detail-item">
+<span class="detail-label">Total Duration:</span><br>
+${posting.days} days
+</div>
+<div class="detail-item">
+<span class="detail-label">Reporting Time:</span><br>
+9:00 AM on the first day
+</div>
+</div>
+</div>
+
+<div class="content">
+<h3 style="color: #2c3e50; margin: 25px 0 15px 0;">TRAINING PROGRAM OVERVIEW</h3>
+<p>During your posting in the <strong>${posting.department}</strong>, you will undergo comprehensive training designed to develop your clinical competencies and professional skills in this specialty.</p>
+</div>`;
+
+if (details) {
+html += `
+<div class="objectives">
+<h4>🎯 LEARNING OBJECTIVES</h4>
+<p>By the end of this ${posting.days}-day posting, you should be able to:</p>
+<ul>
+${details.objectives.map(obj => `<li>${obj}</li>`).join('')}
+</ul>
+</div>
+
+<div class="objectives">
+<h4>🔧 SKILLS TO BE ACQUIRED</h4>
+<p>You are expected to develop proficiency in the following skills:</p>
+<ul>
+${details.skills.map(skill => `<li>${skill}</li>`).join('')}
+</ul>
+</div>`;
+}
+
+html += `
+<div class="objectives">
+<h4>📝 DUTIES AND RESPONSIBILITIES</h4>
+<ul>
+<li>Report to the Head of Department (HOD) on the first day of posting at 9:00 AM</li>
+<li>Maintain regular attendance and punctuality throughout the posting period</li>
+<li>Actively participate in ward rounds, OPD sessions, procedures, and academic activities</li>
+<li>Maintain a detailed log book with daily entries of clinical work and learning experiences</li>
+<li>Perform all assigned duties under the supervision of faculty members</li>
+<li>Attend all departmental meetings, case presentations, and journal clubs</li>
+<li>Follow all hospital protocols, safety guidelines, and infection control measures</li>
+<li>Treat patients with respect, empathy, and maintain complete confidentiality</li>
+<li>Complete all department-specific assignments and assessments</li>
+<li>Obtain HOD signature on your log book at the end of the posting period</li>
+</ul>
+</div>
+
+<div class="important-box">
+<h4 style="margin: 0 0 10px 0; color: #856404;">⚠️ IMPORTANT INSTRUCTIONS</h4>
+<ul style="margin: 10px 0 10px 20px;">
+<li><strong>Dress Code:</strong> Professional attire with white apron and identity card mandatory</li>
+<li><strong>Attendance:</strong> Minimum 80% attendance required for completion certificate</li>
+<li><strong>Leave:</strong> Any leave must be approved by HOD and Medical Superintendent in advance</li>
+<li><strong>Assessment:</strong> You will be evaluated on clinical skills, knowledge, attitude, and professionalism</li>
+<li><strong>Completion:</strong> Obtain completion certificate and HOD signature before moving to next posting</li>
+</ul>
+</div>
+
+<div class="content">
+<h4 style="color: #2c3e50;">REPORTING INSTRUCTIONS:</h4>
+<ol style="margin: 10px 0 10px 20px;">
+<li>Report to the ${posting.department} on <strong>${new Date(posting.fromDate).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</strong> at 9:00 AM sharp</li>
+<li>Carry this posting letter, your log book, and identity card</li>
+<li>Meet with the HOD or department coordinator for orientation</li>
+<li>Obtain your duty schedule and posting guidelines from the department</li>
+<li>Familiarize yourself with department layout, staff, and protocols</li>
+</ol>
+
+<p style="margin-top: 20px;">This posting is an integral part of your internship training program. Your active participation and dedication will ensure maximum learning and skill development.</p>
+
+<p style="margin-top: 15px;">For any queries or concerns regarding this posting, please contact:</p>
+<ul style="margin: 10px 0 10px 20px;">
+<li><strong>Department HOD:</strong> ${posting.department}</li>
+<li><strong>Medical Superintendent Office:</strong> medsupt.jainagm@gmail.com</li>
+<li><strong>Academic Section:</strong> academic.jainagm@gmail.com</li>
+</ul>
+
+<p style="margin-top: 20px;">We wish you a productive and enriching learning experience during your posting at ${posting.department}.</p>
+</div>
+
+<div class="signature">
+<p><strong>For Jain AGM Ayurvedic Medical College & Hospital</strong></p>
+<br><br>
+<p>_______________________________</p>
+<p><strong>Medical Superintendent</strong></p>
+<p>Jain AGM Ayurvedic Medical College & Hospital</p>
+<br>
+<p style="margin-top: 20px;">_______________________________</p>
+<p><strong>Head of Department</strong></p>
+<p>${posting.department}</p>
+</div>
+
+<div class="footer">
+<p style="text-align: center; color: #7f8c8d; font-size: 0.9em;">
+This is an official posting order. Please retain this letter for your records.<br>
+<strong>Posting Duration:</strong> ${new Date(posting.fromDate).toLocaleDateString('en-GB')} to ${new Date(posting.toDate).toLocaleDateString('en-GB')} (${posting.days} days)
+</p>
+</div>
+
+</body></html>`;
+
+return html;
+}
+
+function generatePostingLetterHTML(intern) {
+let html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<title>Internship Posting Letter - ${intern.name}</title>
+<style>
+body { font-family: 'Times New Roman', serif; padding: 40px; line-height: 1.6; }
+.letterhead { text-align: center; margin-bottom: 30px; border-bottom: 3px solid #2c3e50; padding-bottom: 20px; }
+.letterhead h1 { color: #2c3e50; font-size: 1.8em; margin: 10px 0; }
+.letterhead p { color: #7f8c8d; margin: 5px 0; }
+.ref-date { display: flex; justify-content: space-between; margin: 20px 0; font-weight: bold; }
+.subject { text-align: center; font-weight: bold; margin: 20px 0; text-decoration: underline; }
+.content { margin: 20px 0; text-align: justify; }
+.posting-section { margin: 30px 0; page-break-inside: avoid; }
+.posting-header { background: #3498db; color: white; padding: 12px; border-radius: 5px; margin: 20px 0 10px 0; }
+.posting-details { background: #f8f9fa; padding: 15px; border-left: 4px solid #3498db; margin: 10px 0; }
+.posting-dates { font-weight: bold; color: #2c3e50; margin: 10px 0; }
+.objectives { margin: 15px 0; }
+.objectives h4 { color: #2c3e50; margin: 10px 0; }
+.objectives ul { margin: 5px 0 5px 20px; }
+.objectives li { margin: 5px 0; }
+.summary-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+.summary-table th, .summary-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+.summary-table th { background: #3498db; color: white; }
+.footer { margin-top: 50px; }
+.signature { margin-top: 60px; }
+@media print { 
+  body { padding: 20px; }
+  .no-print { display: none; }
+  .posting-section { page-break-inside: avoid; }
+}
+</style></head><body>
+
+<div class="letterhead">
+<h1>JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL</h1>
+<p>VARUR, KALABURAGI DISTRICT, KARNATAKA</p>
+<p>Affiliated to Rajiv Gandhi University of Health Sciences, Karnataka</p>
+<p>Email: jainagmayurvediccollege@gmail.com | Phone: +91-XXXXXXXXXX</p>
+</div>
+
+<div class="ref-date">
+<div>Ref No: JAIN-AGM/INTERN/${new Date().getFullYear()}/${intern.regNo}</div>
+<div>Date: ${new Date().toLocaleDateString('en-GB')}</div>
+</div>
+
+<div class="content">
+<p><strong>To,</strong><br>
+<strong>${intern.name}</strong><br>
+Registration Number: <strong>${intern.regNo}</strong><br>
+Intern, BAMS Final Year</p>
+</div>
+
+<div class="subject">
+SUBJECT: INTERNSHIP POSTING SCHEDULE AND TRAINING GUIDELINES
+</div>
+
+<div class="content">
+<p>Dear ${intern.name.split(' ')[0]},</p>
+
+<p>Greetings from Jain AGM Ayurvedic Medical College & Hospital!</p>
+
+<p>We are pleased to inform you about your complete internship posting schedule for the compulsory rotatory internship of <strong>365 days</strong>, commencing from <strong>${new Date(intern.startDate).toLocaleDateString('en-GB')}</strong>.</p>
+
+<p>This internship is designed to provide you with comprehensive clinical exposure across all departments of Ayurveda and allied specialties. You are expected to actively participate in patient care, develop clinical skills, and gain hands-on experience under the guidance of faculty members.</p>
+
+<p><strong>Your Complete Posting Schedule:</strong></p>
+</div>
+
+<table class="summary-table">
+<thead>
+<tr>
+<th style="width: 50px;">S.No</th>
+<th>Department</th>
+<th>Code</th>
+<th>From Date</th>
+<th>To Date</th>
+<th>Duration</th>
+</tr>
+</thead>
+<tbody>`;
+
+intern.postings.forEach((posting, idx) => {
+const dept = departments.find(d => d.name === posting.department);
+html += `
+<tr>
+<td style="text-align: center;">${idx + 1}</td>
+<td><strong>${posting.department}</strong></td>
+<td><strong>${dept ? dept.code : 'N/A'}</strong></td>
+<td>${new Date(posting.fromDate).toLocaleDateString('en-GB')}</td>
+<td>${new Date(posting.toDate).toLocaleDateString('en-GB')}</td>
+<td style="text-align: center;">${posting.days} days</td>
+</tr>`;
+});
+
+html += `
+<tr style="background: #f8f9fa; font-weight: bold;">
+<td colspan="5" style="text-align: right;">TOTAL DURATION:</td>
+<td style="text-align: center; color: #27ae60;">${intern.totalDays} days</td>
+</tr>
+</tbody>
+</table>
+
+<div class="content">
+<h3 style="color: #2c3e50; margin: 30px 0 20px 0;">DEPARTMENT-WISE TRAINING OBJECTIVES AND EXPECTED COMPETENCIES</h3>
+<p>During your posting in each department, you are expected to achieve the following learning objectives and develop the specified skills:</p>
+</div>`;
+
+// Add detailed objectives for each department
+intern.postings.forEach((posting, idx) => {
+const details = departmentDetails[posting.department];
+if (details) {
+html += `
+<div class="posting-section">
+<div class="posting-header">
+<strong>${idx + 1}. ${posting.department} (${posting.days} days)</strong>
+</div>
+<div class="posting-dates">
+📅 Duration: ${new Date(posting.fromDate).toLocaleDateString('en-GB')} to ${new Date(posting.toDate).toLocaleDateString('en-GB')}
+</div>
+<div class="objectives">
+<h4>Learning Objectives:</h4>
+<ul>
+${details.objectives.map(obj => `<li>${obj}</li>`).join('')}
+</ul>
+</div>
+<div class="objectives">
+<h4>Skills to be Acquired:</h4>
+<ul>
+${details.skills.map(skill => `<li>${skill}</li>`).join('')}
+</ul>
+</div>
+</div>`;
+}
+});
+
+html += `
+<div class="content" style="margin-top: 30px;">
+<h3 style="color: #2c3e50;">GENERAL INSTRUCTIONS FOR INTERNS:</h3>
+<ol style="margin: 15px 0 15px 20px;">
+<li>Report to the respective department on the first day of your posting by 9:00 AM</li>
+<li>Maintain professional attire and wear your identity card at all times</li>
+<li>Regular attendance and punctuality are mandatory</li>
+<li>Maintain a log book documenting your daily clinical activities and learning experiences</li>
+<li>Actively participate in ward rounds, OPD sessions, and procedures</li>
+<li>Treat all patients with respect, empathy, and maintain confidentiality</li>
+<li>Obtain faculty signatures on your log book at the end of each posting</li>
+<li>Appear for department assessments as scheduled</li>
+<li>Any leave of absence must be approved in advance by the Medical Superintendent</li>
+<li>Follow all hospital protocols, infection control measures, and safety guidelines</li>
+</ol>
+
+<p><strong>Assessment and Evaluation:</strong></p>
+<p>Your performance in each department will be evaluated based on:</p>
+<ul style="margin: 10px 0 10px 20px;">
+<li>Clinical knowledge and skills</li>
+<li>Professional attitude and behavior</li>
+<li>Regularity and punctuality</li>
+<li>Participation in academic activities</li>
+<li>Log book maintenance</li>
+<li>Department-specific assessments</li>
+</ul>
+
+<p style="margin-top: 20px;"><strong>Important Note:</strong> Successful completion of all department postings with satisfactory performance is mandatory for the award of the BAMS degree. Any shortage in attendance or unsatisfactory performance may result in extension of internship period.</p>
+
+<p style="margin-top: 20px;">We wish you a productive and enriching learning experience during your internship. Should you have any queries or concerns, please feel free to approach the Medical Superintendent's office or the respective Department Heads.</p>
+
+<p style="margin-top: 30px;">Best wishes for your internship!</p>
+</div>
+
+<div class="signature">
+<p><strong>For Jain AGM Ayurvedic Medical College & Hospital</strong></p>
+<br><br>
+<p>_______________________________</p>
+<p><strong>Medical Superintendent</strong></p>
+<p>Jain AGM Ayurvedic Medical College & Hospital</p>
+</div>
+
+<div class="footer">
+<hr style="margin: 30px 0;">
+<p style="text-align: center; color: #7f8c8d; font-size: 0.9em;">
+This is a computer-generated document and does not require a physical signature.<br>
+For any clarifications, please contact: Medical Superintendent Office | Email: medsupt.jainagm@gmail.com
+</p>
+</div>
+
+</body></html>`;
+
+return html;
+}
+
+function generateMasterCalendar() {
+if (!interns.length || !interns.some(i => i.postings.length)) {
+alert('⚠️ No interns with postings found');
+return;
+}
+const html = generateCalendarHTML(interns.filter(i => i.postings.length));
+downloadFile(html, `Master_Calendar_${new Date().toISOString().split('T')[0]}.html`);
+alert('✅ Master calendar generated!');
+}
+
+function generateCalendarHTML(internsList) {
+const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const colors = ['#e3f2fd','#f3e5f5','#e8f5e9','#fff3e0','#fce4ec','#e0f2f1','#f1f8e9','#fff9c4','#ede7f6','#e8eaf6','#ffebee','#f3e5f5','#e1f5fe','#fce4ec','#f9fbe7','#e0f7fa','#fef9e7','#f1f8e9'];
+
+let html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Posting Calendar</title>
+<style>
+body { font-family: Arial; padding: 20px; }
+h1, h2 { text-align: center; color: #2c3e50; }
+table { width: 100%; border-collapse: collapse; margin: 20px 0; page-break-inside: avoid; }
+th, td { border: 1px solid #ddd; padding: 10px; text-align: center; vertical-align: top; }
+th { background: #3498db; color: white; font-weight: 600; }
+.posting-cell { background: #e3f2fd; padding: 4px; margin: 2px 0; border-radius: 3px; font-size: 0.8em; }
+.dept-legend { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin: 15px 0; }
+.legend-item { font-size: 0.85em; padding: 5px; }
+</style></head><body>
+<h1>JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL, VARUR</h1>
+<h2>POSTING CALENDAR - MONTH-BY-MONTH VIEW</h2>
+<p style="text-align: center; color: #7f8c8d;">Generated: ${new Date().toLocaleDateString()}</p>`;
+
+internsList.forEach(intern => {
+const years = [...new Set(intern.postings.flatMap(p => [
+new Date(p.fromDate).getFullYear(),
+new Date(p.toDate).getFullYear()
+]))].sort();
+
+html += `
+<div style="margin: 30px 0; page-break-inside: avoid;">
+<h3 style="background: linear-gradient(135deg, #3498db, #2980b9); color: white; padding: 15px; border-radius: 8px;">
+${intern.name} (${intern.regNo}) - Start: ${new Date(intern.startDate).toLocaleDateString()}
+</h3>`;
+
+years.forEach(year => {
+html += `
+<h4 style="color: #2c3e50; margin: 15px 0;">Year ${year}</h4>
+<table>
+<thead>
+<tr>${months.map(m => `<th>${m}</th>`).join('')}</tr>
+</thead>
+<tbody><tr>`;
+
+months.forEach((m, mi) => {
+let cellContent = '';
+intern.postings.forEach((p, pi) => {
+const start = new Date(p.fromDate);
+const end = new Date(p.toDate);
+const monthStart = new Date(year, mi, 1);
+const monthEnd = new Date(year, mi + 1, 0);
+
+if (start <= monthEnd && end >= monthStart) {
+const dept = departments.find(d => d.name === p.department);
+const code = dept ? dept.code : 'N/A';
+const color = colors[pi % colors.length];
+const fromDay = start.getMonth() === mi && start.getFullYear() === year ? start.getDate() : 1;
+const toDay = end.getMonth() === mi && end.getFullYear() === year ? end.getDate() : monthEnd.getDate();
+cellContent += `<div class="posting-cell" style="background: ${color};"><strong>${code}</strong><br>${fromDay}-${toDay}</div>`;
+}
+});
+html += `<td style="height: 100px;">${cellContent || '-'}</td>`;
+});
+
+html += '</tr></tbody></table>';
+});
+
+html += `
+<div class="dept-legend">
+${intern.postings.map(p => {
+const dept = departments.find(d => d.name === p.department);
+return `<div class="legend-item"><strong>${dept ? dept.code : 'N/A'}:</strong> ${p.department}</div>`;
+}).join('')}
+</div>
+</div>`;
+});
+
+html += `
+<div style="text-align: center; margin-top: 30px; padding: 20px; background: #ecf0f1; border-radius: 10px;">
+<p style="font-weight: bold;">THIS IS AN OFFICIAL DOCUMENT OF THE COLLEGE</p>
+</div>
+</body></html>`;
+
+return html;
+}
+
+function deleteIntern(id) {
+if (confirm('🗑️ Delete this intern and all postings?')) {
+interns = interns.filter(i => i.id !== id);
+localStorage.setItem('internData', JSON.stringify(interns));
+updateStats();
+renderInterns();
+alert('✅ Intern deleted');
+}
+}
+
+function exportAllData() {
+const data = {
+interns,
+exported: new Date().toISOString(),
+version: '2.0',
+college: 'JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL, VARUR'
+};
+const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+const url = URL.createObjectURL(blob);
+const a = document.createElement('a');
+a.href = url;
+a.download = `Intern_Data_Backup_${new Date().toISOString().split('T')[0]}.json`;
+a.click();
+URL.revokeObjectURL(url);
+alert('✅ Data exported! Save this file safely.');
+}
+
+function importData() {
+document.getElementById('importFile').click();
+}
+
+function handleImport(event) {
+const file = event.target.files[0];
+if (!file) return;
+const reader = new FileReader();
+reader.onload = function(e) {
+try {
+const data = JSON.parse(e.target.result);
+if (data.interns && Array.isArray(data.interns)) {
+if (confirm(`📥 Import ${data.interns.length} interns? This will replace current data.`)) {
+interns = data.interns;
+localStorage.setItem('internData', JSON.stringify(interns));
+updateStats();
+renderInterns();
+alert('✅ Data imported successfully!');
+}
+} else {
+alert('❌ Invalid file format');
+}
+} catch (error) {
+alert('❌ Error reading file');
+}
+};
+reader.readAsText(file);
+event.target.value = '';
+}
+
+function downloadFile(content, filename) {
+const blob = new Blob([content], { type: 'text/html' });
+const url = URL.createObjectURL(blob);
+const a = document.createElement('a');
+a.href = url;
+a.download = filename;
+document.body.appendChild(a);
+a.click();
+document.body.removeChild(a);
+URL.revokeObjectURL(url);
+}
+
+function updateStats() {
+document.getElementById('totalInterns').textContent = interns.length;
+document.getElementById('completedInterns').textContent = interns.filter(i => i.totalDays >= 365).length;
+document.getElementById('pendingInterns').textContent = interns.filter(i => i.totalDays < 365).length;
+}
+
+function debugInterns() {
+console.log('=== DEBUG INFO ===');
+console.log('Total interns:', interns.length);
+console.log('Departments:', departments.length);
+console.log('Department details:');
+let totalDays = 0;
+departments.forEach((d, i) => {
+console.log(`  ${i+1}. ${d.code} - ${d.name}: ${d.days} days`);
+totalDays += d.days;
+});
+console.log('Total days across all departments:', totalDays);
+console.log('\nIntern details:');
+interns.forEach((intern, i) => {
+console.log(`\n${i+1}. ${intern.name} (${intern.regNo})`);
+console.log(`   Start Date: ${intern.startDate}`);
+console.log(`   Rotation Generated: ${intern.rotationGenerated}`);
+console.log(`   Postings: ${intern.postings.length}`);
+console.log(`   Total Days: ${intern.totalDays}`);
+if (intern.postings.length > 0) {
+intern.postings.forEach((p, pi) => {
+console.log(`     ${pi+1}. ${p.department}: ${p.fromDate} to ${p.toDate} (${p.days} days)`);
+});
+}
+});
+alert(`Debug info logged to console (Press F12 to view)\n\nSummary:\n• Total Interns: ${interns.length}\n• Total Departments: ${departments.length}\n• Total Days: ${totalDays}\n\nCheck browser console for detailed logs.`);
+}
+
+function closeModal(id) {
+document.getElementById(id).style.display = 'none';
+}
+
+window.onclick = e => {
+if (e.target.className === 'modal') e.target.style.display = 'none';
+};
+
+// Initialize
+updateStats();
+</script>
+</body>
+</html>
