@@ -341,26 +341,27 @@ const adminCreds = {
 'principal': { password: 'prin2025', role: 'Principal' }
 };
 
-// 18 Departments with exact durations (Total: 365 days) - FINAL
+// 19 Departments with exact durations (Total: 365 days) - NEW ORDER
 const departments = [
-{ name: 'KAYACHIKITSA', code: 'KC', days: 45 },  // Increased back to 45
-{ name: 'SWASTHAVRITTA', code: 'SW', days: 15 },
+{ name: 'KAYACHIKITSA', code: 'KC', days: 45 },
 { name: 'SHALYA TANTRA', code: 'ST', days: 30 },
+{ name: 'SURGICAL HOSPITAL', code: 'SH', days: 15 },
 { name: 'SHALAKYA TANTRA', code: 'SKT', days: 15 },
-{ name: 'PRASUTI TANTRA & STREE ROGA', code: 'PTSR', days: 15 },
-{ name: 'KAUMARABHRITYA', code: 'KB', days: 15 },
-{ name: 'PANCHAKARMA', code: 'PK', days: 35 },  // Increased to 35
-{ name: 'AGADA TANTRA', code: 'AT', days: 15 },
-{ name: 'ATYAYIKA', code: 'ATY', days: 15 },
-{ name: 'LABORATORY', code: 'LAB', days: 15 },
-{ name: 'SCREENING OPD', code: 'SCR', days: 15 },
-{ name: 'PHARMACY', code: 'PHM', days: 15 },  // Reduced to 15
-{ name: 'AYUSH', code: 'AYU', days: 30 },
-{ name: 'PHYSIOTHERAPY', code: 'PHYSIO', days: 15 },
-{ name: 'SPARSHA PEDIATRIC HOSPITAL', code: 'SPH', days: 15 },
 { name: 'AGARWAL EYE HOSPITAL', code: 'AEH', days: 15 },
+{ name: 'PANCHAKARMA', code: 'PK', days: 35 },
+{ name: 'PRASUTI TANTRA & STREE ROGA', code: 'PTSR', days: 15 },
+{ name: 'MATERNITY HOSPITAL', code: 'MH', days: 15 },
+{ name: 'KAUMARABHRITYA', code: 'KB', days: 15 },
+{ name: 'SPARSHA PEDIATRIC HOSPITAL', code: 'SPH', days: 15 },
+{ name: 'SWASTHAVRITTA', code: 'SW', days: 15 },
+{ name: 'PHYSIOTHERAPY', code: 'PHYSIO', days: 15 },
+{ name: 'ATYAYIKA', code: 'ATY', days: 15 },
+{ name: 'AGADA TANTRA', code: 'AT', days: 15 },
+{ name: 'LABORATORY', code: 'LAB', days: 15 },
+{ name: 'PHARMACY', code: 'PHM', days: 15 },
+{ name: 'SCREENING OPD', code: 'SCR', days: 15 },
 { name: 'CANCER HOSPITAL', code: 'CANC', days: 15 },
-{ name: 'SURGICAL & MATERNITY HOSPITAL', code: 'SMH', days: 30 }
+{ name: 'AYUSH', code: 'AYU', days: 30 }
 ];
 
 // Department-specific training objectives and expectations
@@ -657,22 +658,40 @@ const departmentDetails = {
       'End-of-life care'
     ]
   },
-  'SURGICAL & MATERNITY HOSPITAL': {
+  'SURGICAL HOSPITAL': {
     objectives: [
       'Advanced surgical care exposure',
       'Major surgical procedures assistance',
-      'Obstetric emergency management',
-      'High-risk pregnancy care',
       'Operation theatre protocols',
+      'Pre-operative and post-operative care',
+      'Surgical emergency management',
       'Post-operative intensive care'
     ],
     skills: [
       'Surgical scrubbing techniques',
       'Assisting in major surgeries',
-      'Labor room management',
-      'Cesarean section assistance',
+      'Surgical instrument identification',
       'Post-operative monitoring',
-      'Surgical instrument identification'
+      'Wound care management',
+      'Sterile technique maintenance'
+    ]
+  },
+  'MATERNITY HOSPITAL': {
+    objectives: [
+      'Obstetric emergency management',
+      'High-risk pregnancy care',
+      'Normal and assisted deliveries',
+      'Cesarean section assistance',
+      'Neonatal resuscitation',
+      'Postnatal mother and baby care'
+    ],
+    skills: [
+      'Labor room management',
+      'Fetal monitoring',
+      'Delivery assistance',
+      'Episiotomy and repair',
+      'Newborn assessment',
+      'Breastfeeding support'
     ]
   }
 };
@@ -828,19 +847,19 @@ if (internsToGenerate.length === 0) {
 alert('ℹ️ All interns already have rotations generated!\n\nTo regenerate, delete and re-add interns, or delete their postings manually.');
 return;
 }
-if (!confirm(`🔄 Generate automatic rotations for ${internsToGenerate.length} interns?\n\n✓ Creates complete 365-day schedules\n✓ First 90 days: In-house training (Depts 1-12)\n✓ After 90 days: External postings allowed (Depts 13-18)\n✓ All 18 departments included\n✓ Minimizes overlaps\n\nProceed?`)) {
+if (!confirm(`🔄 Generate automatic rotations for ${internsToGenerate.length} interns?\n\n✓ Creates complete 365-day schedules\n✓ First 90 days: In-house training (Depts 1-13)\n✓ After 90 days: External postings allowed (Depts 14-19)\n✓ All 19 departments included\n✓ Minimizes overlaps\n\nProceed?`)) {
 return;
 }
 
 console.log('Starting rotation generation with 90-day in-house rule...');
 console.log('Total departments:', departments.length);
 
-// Separate in-house (1-12) and external (13-18) departments
-const inHouseDepts = departments.slice(0, 12); // Departments 1-12
-const externalDepts = departments.slice(12, 18); // Departments 13-18
+// Separate in-house (1-13) and external (14-19) departments
+const inHouseDepts = departments.slice(0, 13); // Departments 1-13
+const externalDepts = departments.slice(13, 19); // Departments 14-19
 
-console.log('In-house departments:', inHouseDepts.map(d => d.code).join(', '));
-console.log('External departments:', externalDepts.map(d => d.code).join(', '));
+console.log('In-house departments (1-13):', inHouseDepts.map(d => d.code).join(', '));
+console.log('External departments (14-19):', externalDepts.map(d => d.code).join(', '));
 
 let generatedCount = 0;
 internsToGenerate.forEach((intern, internIndex) => {
@@ -858,7 +877,7 @@ let currentDate = new Date(startDate);
 let accumulatedDays = 0;
 intern.postings = [];
 
-// PHASE 1: First 90 days - Only in-house departments (1-12)
+// PHASE 1: First 90 days - Only in-house departments (1-13)
 console.log('PHASE 1: Scheduling in-house departments for first 90 days...');
 const shuffledInHouse = shuffleWithOffset([...inHouseDepts], internIndex);
 let phase1Postings = [];
@@ -941,7 +960,7 @@ console.log('Verification:', interns.map(i => `${i.name}: ${i.postings.length} p
 
 updateStats();
 renderInterns();
-alert(`✅ SUCCESS! Generated rotations for ${generatedCount} interns!\n\n📊 Each intern now has:\n• Complete 365-day schedule\n• First 90+ days: In-house training only (Depts 1-12)\n• After 90 days: Mixed in-house + external postings\n• All 18 departments assigned\n• Total: ${interns[0]?.totalDays || 365} days\n\n📅 TO VIEW:\n1. Click "📊 Individual Chart" for table view\n2. Click "📅 Calendar" for month view\n3. Click "📄 Complete Posting Letter" for full schedule\n4. Click "📝 Department Letter" for specific department`);
+alert(`✅ SUCCESS! Generated rotations for ${generatedCount} interns!\n\n📊 Each intern now has:\n• Complete 365-day schedule\n• First 90+ days: In-house training only (Depts 1-13)\n• After 90 days: Mixed in-house + external postings (Depts 14-19)\n• All 19 departments assigned\n• Total: ${interns[0]?.totalDays || 365} days\n\n📅 TO VIEW:\n1. Click "📊 Individual Chart" for table view\n2. Click "📅 Calendar" for month view\n3. Click "📄 Complete Posting Letter" for full schedule\n4. Click "📝 Department Letter" for specific department`);
 }
 
 function shuffleWithOffset(array, offset) {
@@ -971,7 +990,7 @@ ${Math.round(progress)}%
 </div>
 <div style="margin: 10px 0;">
 <strong>Days:</strong> ${intern.totalDays}/365 |
-<strong>Depts:</strong> ${intern.postings.length}/18
+<strong>Depts:</strong> ${intern.postings.length}/19
 ${intern.rotationGenerated ? '<span style="color: #27ae60;">✓ Auto-Generated</span>' : ''}
 </div>
 <div style="max-height: 150px; overflow-y: auto;">
