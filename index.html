@@ -847,23 +847,23 @@ if (internsToGenerate.length === 0) {
 alert('ℹ️ All interns already have rotations generated!\n\nTo regenerate, delete and re-add interns, or delete their postings manually.');
 return;
 }
-if (!confirm(`🔄 Generate automatic rotations for ${internsToGenerate.length} interns?\n\n✓ Creates complete 365-day schedules\n✓ First 90 days: In-house training ONLY\n✓ After 90 days: External postings allowed\n✓ All 19 departments included\n✓ Minimizes overlaps\n\nProceed?`)) {
+if (!confirm(`🔄 Generate automatic rotations for ${internsToGenerate.length} interns?\n\n✓ Creates complete 365-day schedules\n✓ First 60 days: In-house training ONLY\n✓ After 60 days: Mixed in-house + external postings\n✓ All 19 departments included\n✓ Minimizes overlaps\n\nProceed?`)) {
 return;
 }
 
-console.log('Starting rotation generation with 90-day in-house rule...');
+console.log('Starting rotation generation with 60-day in-house rule...');
 console.log('Total departments:', departments.length);
 
-// IN-HOUSE departments (positions: 0, 1, 3, 5, 6, 8, 10, 12, 13, 14, 15, 16)
-// Departments at indices: 1, 2, 4, 6, 7, 9, 11, 13, 14, 15, 16, 17 (1-based) = indices 0, 1, 3, 5, 6, 8, 10, 12, 13, 14, 15, 16 (0-based)
-const inHouseIndices = [0, 1, 3, 5, 6, 8, 10, 12, 13, 14, 15, 16];
-const externalIndices = [2, 4, 7, 9, 11, 17, 18];
-
+// Define IN-HOUSE departments: 1, 2, 4, 6, 7, 9, 11, 13, 14, 15, 16, 17
+const inHouseIndices = [0, 1, 3, 5, 6, 8, 10, 12, 13, 14, 15, 16]; // Array indices (0-based)
 const inHouseDepts = inHouseIndices.map(i => departments[i]);
+
+// Define EXTERNAL departments: 3, 5, 8, 10, 12, 18, 19
+const externalIndices = [2, 4, 7, 9, 11, 17, 18]; // Array indices (0-based)
 const externalDepts = externalIndices.map(i => departments[i]);
 
-console.log('In-house departments:', inHouseDepts.map(d => d.code).join(', '));
-console.log('External departments:', externalDepts.map(d => d.code).join(', '));
+console.log('IN-HOUSE departments:', inHouseDepts.map(d => d.code).join(', '));
+console.log('EXTERNAL departments:', externalDepts.map(d => d.code).join(', '));
 
 let generatedCount = 0;
 internsToGenerate.forEach((intern, internIndex) => {
@@ -881,14 +881,14 @@ let currentDate = new Date(startDate);
 let accumulatedDays = 0;
 intern.postings = [];
 
-// PHASE 1: First 90 days - Only in-house departments
-console.log('PHASE 1: Scheduling in-house departments for first 90 days...');
+// PHASE 1: First 60 days - Only IN-HOUSE departments
+console.log('PHASE 1: Scheduling IN-HOUSE departments for first 60 days...');
 const shuffledInHouse = shuffleWithOffset([...inHouseDepts], internIndex);
 let phase1Postings = [];
 let phase1Days = 0;
 
 for (let dept of shuffledInHouse) {
-if (phase1Days >= 90) break; // Stop once we hit 90 days
+if (phase1Days >= 60) break; // Stop once we hit 60 days
 const fromDate = new Date(currentDate);
 const toDate = new Date(currentDate);
 toDate.setDate(toDate.getDate() + dept.days - 1);
@@ -908,12 +908,12 @@ currentDate.setDate(currentDate.getDate() + dept.days);
 console.log(`  ✓ ${dept.code}: ${posting.fromDate} to ${posting.toDate} (${dept.days} days) - Total so far: ${phase1Days} days`);
 }
 
-console.log(`Phase 1 complete: ${phase1Days} days in-house`);
+console.log(`Phase 1 complete: ${phase1Days} days in-house (NO EXTERNAL)`);
 intern.postings = [...phase1Postings];
 accumulatedDays = phase1Days;
 
-// PHASE 2: After 90 days - Mix remaining in-house and all external departments
-console.log('PHASE 2: Scheduling remaining departments after 90 days...');
+// PHASE 2: After 60 days - Mix remaining in-house and all external departments RANDOMLY
+console.log('PHASE 2: Scheduling remaining departments after 60 days (RANDOM MIX)...');
 
 // Get remaining in-house departments that weren't scheduled in Phase 1
 const remainingInHouse = shuffledInHouse.filter(dept => 
@@ -924,7 +924,10 @@ const remainingInHouse = shuffledInHouse.filter(dept =>
 const shuffledExternal = shuffleWithOffset([...externalDepts], internIndex);
 const phase2Depts = [...remainingInHouse, ...shuffledExternal];
 
-phase2Depts.forEach((dept, deptIndex) => {
+// Shuffle the combined array randomly for each intern
+const randomizedPhase2 = shuffleWithOffset(phase2Depts, internIndex + 1000);
+
+randomizedPhase2.forEach((dept, deptIndex) => {
 const fromDate = new Date(currentDate);
 const toDate = new Date(currentDate);
 toDate.setDate(toDate.getDate() + dept.days - 1);
@@ -941,7 +944,8 @@ intern.postings.push(posting);
 accumulatedDays += dept.days;
 currentDate.setDate(currentDate.getDate() + dept.days);
 
-console.log(`  ✓ ${dept.code}: ${posting.fromDate} to ${posting.toDate} (${dept.days} days) - Total: ${accumulatedDays} days`);
+const isExternal = externalDepts.some(ed => ed.name === dept.name);
+console.log(`  ✓ ${dept.code}: ${posting.fromDate} to ${posting.toDate} (${dept.days} days) ${isExternal ? '[EXTERNAL]' : '[IN-HOUSE]'} - Total: ${accumulatedDays} days`);
 });
 
 intern.totalDays = intern.postings.reduce((sum, p) => sum + p.days, 0);
@@ -949,8 +953,8 @@ intern.rotationGenerated = true;
 generatedCount++;
 
 console.log(`✓ ${intern.name}: ${intern.postings.length} departments, ${intern.totalDays} total days`);
-console.log(`  First 90 days: ${phase1Days} days in-house`);
-console.log(`  Remaining: ${intern.totalDays - phase1Days} days (mixed)`);
+console.log(`  First 60 days: ${phase1Days} days (IN-HOUSE ONLY)`);
+console.log(`  Remaining: ${intern.totalDays - phase1Days} days (RANDOMLY MIXED)`);
 });
 
 // Save to localStorage
@@ -964,7 +968,7 @@ console.log('Verification:', interns.map(i => `${i.name}: ${i.postings.length} p
 
 updateStats();
 renderInterns();
-alert(`✅ SUCCESS! Generated rotations for ${generatedCount} interns!\n\n📊 Each intern now has:\n• Complete 365-day schedule\n• First 90+ days: In-house training ONLY\n  (KC, ST, SKT, PK, PTSR, KB, SW, ATY, AT, LAB, PHM, SCR)\n• After 90 days: External postings allowed\n  (SH, AEH, MH, SPH, PHYSIO, CANC, AYUSH)\n• All 19 departments assigned\n• Total: ${interns[0]?.totalDays || 365} days\n\n📅 TO VIEW:\n1. Click "📊 Individual Chart" for table view\n2. Click "📅 Calendar" for month view\n3. Click "📄 Complete Posting Letter" for full schedule\n4. Click "📝 Department Letter" for specific department`);
+alert(`✅ SUCCESS! Generated rotations for ${generatedCount} interns!\n\n📊 Each intern now has:\n• Complete 365-day schedule\n• First 60+ days: IN-HOUSE training ONLY\n  (Depts: 1,2,4,6,7,9,11,13,14,15,16,17)\n• After 60 days: RANDOMLY MIXED in-house + external\n  (All 19 departments)\n• Total: ${interns[0]?.totalDays || 365} days\n\n📅 TO VIEW:\n1. Click "📊 Individual Chart" for table view\n2. Click "📅 Calendar" for month view\n3. Click "📄 Complete Posting Letter" for full schedule\n4. Click "📝 Department Letter" for specific department`);
 }
 
 function shuffleWithOffset(array, offset) {
